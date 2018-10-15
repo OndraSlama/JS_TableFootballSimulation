@@ -11,16 +11,20 @@ class MyBox2D {
             this.PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
             this.CircleShape = Box2D.Collision.Shapes.b2CircleShape,
             this.DebugDraw = Box2D.Dynamics.b2DebugDraw;
+            this.ContactListener = Box2D.Dynamics.b2ContactListener
+            // Box2D.Dynamics.b2
 
         // Conversion values
         this.pixelScale = pscl; //pixel to world scale
-        this.unitsScale = uscl; //user's unit to world scale
+        this.unitsScaleX = uscl; //user's unit to world scale
+        this.unitsScaleY = uscl;
         this.xOff = 0; // x offset for user units
         this.yOff = 0; // y offset for user units
 
         // Animation
         this.speedFactor = 1;
         this.frameRate = 60;
+        this.timeStep = 1/this.frameRate;
 
         // World objects
         this.world;
@@ -36,14 +40,24 @@ class MyBox2D {
     }
 
     update() {
-        for (let i = 0; i < (this.speedFactor > 1 ? Math.round(this.speedFactor) : 1); i++) {
-            this.world.Step(
-                1 / this.frameRate * (this.speedFactor < 1 ? this.speedFactor : 1) //frame-rate
-                , 10 //velocity iterations
-                , 10 //position iterations
-            );
-            this.world.ClearForces();
-        }
+        this.timeStep = (1 / this.frameRate) * (this.speedFactor < 1 ? this.speedFactor : 1);
+        
+        this.world.Step(
+            this.timeStep //frame-rate
+            , 10 //velocity iterations
+            , 10 //position iterations
+        );
+        this.world.ClearForces();
+        
+    }
+
+    positionToVelocity(pos, body){        
+        let vel = new this.Vec2(pos.x, pos.y);
+        
+        let currentPos = body.GetPosition();
+        vel.Subtract(currentPos);
+        vel.Multiply(1/this.timeStep);
+        return vel;        
     }
 
     pxlToWorld(pos, second = undefined) {
@@ -67,28 +81,28 @@ class MyBox2D {
     unitsToWorld(first, second = "", third = "") {
         if ((first instanceof p5.Vector) || (first instanceof this.Vec2) || typeof second != "string") {
             let X, Y;
-            if (second == "") {
-                X = first.x / this.unitsScale + this.xOff;
-                Y = first.y / this.unitsScale + this.yOff;
+            if (second === "") {
+                X = first.x / this.unitsScaleX + this.xOff;
+                Y = first.y / this.unitsScaleY + this.yOff;
             } else if (second == "SCALE") {
-                X = first.x / this.unitsScale;
-                Y = first.y / this.unitsScale;
-            } else if (third == "") {
-                X = first / this.unitsScale + this.xOff;
-                Y = second / this.unitsScale + this.yOff;
+                X = first.x / this.unitsScaleX;
+                Y = first.y / this.unitsScaleY;
+            } else if (third === "") {
+                X = first / this.unitsScaleX + this.xOff;
+                Y = second / this.unitsScaleY + this.yOff;
             } else if (third == "SCALE") {
-                X = first / this.unitsScale;
-                Y = second / this.unitsScale;
+                X = first / this.unitsScaleX;
+                Y = second / this.unitsScaleY;
             }
             return new this.Vec2(X, Y);
         }
 
         if (second == "WIDTH") {
-            return first / this.unitsScale + this.xOff;
+            return first / this.unitsScaleX + this.xOff;
         } else if (second == "HEIGHT") {
-            return first / this.unitsScale + this.yOff;
+            return first / this.unitsScaleY + this.yOff;
         } else{
-            return first / this.unitsScale;
+            return first / this.unitsScaleX;
         }
     }
 
@@ -96,27 +110,27 @@ class MyBox2D {
         if ((first instanceof p5.Vector) || (first instanceof this.Vec2) || typeof second != "string") {
             let X, Y;
             if (second == "") {
-                X = (first.x - this.xOff) * this.unitsScale;
-                Y = (first.y - this.yOff) * this.unitsScale;
+                X = (first.x - this.xOff) * this.unitsScaleX;
+                Y = (first.y - this.yOff) * this.unitsScaleY;
             } else if (second == "SCALE") {
-                X = first.x * this.unitsScale;
-                Y = first.y * this.unitsScale;
+                X = first.x * this.unitsScaleX;
+                Y = first.y * this.unitsScaleY;
             } else if (third == "") {
-                X = (first  - this.xOff) * this.unitsScale;
-                Y = (second - this.yOff) * this.unitsScale;
+                X = (first  - this.xOff) * this.unitsScaleX;
+                Y = (second - this.yOff) * this.unitsScaleY;
             } else if (third == "SCALE") {
-                X = first * this.unitsScale;
-                Y = second * this.unitsScale;
+                X = first * this.unitsScaleX;
+                Y = second * this.unitsScaleY;
             }
             return createVector(X, Y);
         }
 
         if (second == "WIDTH") {
-            return (first - this.xOff) * this.unitsScale; 
+            return (first - this.xOff) * this.unitsScaleX; 
         } else if (second == "HEIGHT") {
-            return (first - this.yOff) * this.unitsScale;
+            return (first - this.yOff) * this.unitsScaleY;
         } else{
-            return first * this.unitsScale;
+            return first * this.unitsScaleX;
         }
     }
 
