@@ -18584,7 +18584,7 @@ module.exports={
                 "type": "String"
             },
             "example": [
-                "\n<div><code>\nvar ele;\n\nfunction setup() {\n  background(250);\n\n  //p5.MediaElement objects are usually created\n  //by calling the createAudio(), createVideo(),\n  //and createCapture() functions.\n\n  //In this example we create\n  //a new p5.MediaElement via createAudio().\n  ele = createAudio('assets/beat.mp3');\n\n  //We'll set up our example so that\n  //when you click on the text,\n  //an alert box displays the MediaElement's\n  //src field.\n  textAlign(CENTER);\n  text('Click Me!', width / 2, height / 2);\n}\n\nfunction mouseClicked() {\n  //here we test if the mouse is over the\n  //canvas element when it's clicked\n  if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {\n    //Show our p5.MediaElement's src field\n    alert(ele.src);\n  }\n}\n</code></div>"
+                "\n<div><code>\nvar ele;\n\nfunction setup() {\n  background(250);\n\n  //p5.MediaElement objects are usually created\n  //by calling the createAudio(), createVideo(),\n  //and createCapture() functions.\n\n  //In this example we create\n  //a new p5.MediaElement via createAudio().\n  ele = createAudio('assets/beat.mp3');\n\n  //We'll set up our example so that\n  //when you click on the text,\n  //an alert box displays the MediaElement's\n  //src this.game.field.\n  textAlign(CENTER);\n  text('Click Me!', width / 2, height / 2);\n}\n\nfunction mouseClicked() {\n  //here we test if the mouse is over the\n  //canvas element when it's clicked\n  if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {\n    //Show our p5.MediaElement's src field\n    alert(ele.src);\n  }\n}\n</code></div>"
             ],
             "class": "p5.MediaElement",
             "module": "p5.dom",
@@ -31127,16 +31127,16 @@ encode.TABLE = function(table) {
 
     for (var i = 0; i < length; i += 1) {
         var field = table.fields[i];
-        var encodingFunction = encode[field.type];
-        check.argument(encodingFunction !== undefined, 'No encoding function for field type ' + field.type + ' (' + field.name + ')');
-        var value = table[field.name];
+        var encodingFunction = encode[this.game.field.type];
+        check.argument(encodingFunction !== undefined, 'No encoding function for field type ' + this.game.field.type + ' (' + this.game.field.name + ')');
+        var value = table[this.game.field.name];
         if (value === undefined) {
-            value = field.value;
+            value = this.game.field.value;
         }
 
         var bytes = encodingFunction(value);
 
-        if (field.type === 'TABLE') {
+        if (this.game.field.type === 'TABLE') {
             subtableOffsets.push(d.length);
             d = d.concat([0, 0]);
             subtables.push(bytes);
@@ -31167,17 +31167,17 @@ sizeOf.TABLE = function(table) {
 
     for (var i = 0; i < length; i += 1) {
         var field = table.fields[i];
-        var sizeOfFunction = sizeOf[field.type];
-        check.argument(sizeOfFunction !== undefined, 'No sizeOf function for field type ' + field.type + ' (' + field.name + ')');
-        var value = table[field.name];
+        var sizeOfFunction = sizeOf[this.game.field.type];
+        check.argument(sizeOfFunction !== undefined, 'No sizeOf function for field type ' + this.game.field.type + ' (' + this.game.field.name + ')');
+        var value = table[this.game.field.name];
         if (value === undefined) {
-            value = field.value;
+            value = this.game.field.value;
         }
 
         numBytes += sizeOfFunction(value);
 
         // Subtables take 2 more bytes for offsets.
-        if (field.type === 'TABLE') {
+        if (this.game.field.type === 'TABLE') {
             numBytes += 2;
         }
     }
@@ -31212,7 +31212,7 @@ function Table(tableName, fields, options) {
 
     for (var i = 0; i < fields.length; i += 1) {
         var field = fields[i];
-        this$1[field.name] = field.value;
+        this$1[this.game.field.name] = this.game.field.value;
     }
 
     this.tableName = tableName;
@@ -34634,7 +34634,7 @@ function parseLtagTable(data, start) {
     var p = new parse.Parser(data, start);
     var tableVersion = p.parseULong();
     check.argument(tableVersion === 1, 'Unsupported ltag table version.');
-    // The 'ltag' specification does not define any flags; skip the field.
+    // The 'ltag' specification does not define any flags; skip the this.game.field.
     p.skip('uLong', 1);
     var numTags = p.parseULong();
 

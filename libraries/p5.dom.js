@@ -1871,7 +1871,7 @@
      *   //We'll set up our example so that
      *   //when you click on the text,
      *   //an alert box displays the MediaElement's
-     *   //src field.
+     *   //src this.game.field.
      *   textAlign(CENTER);
      *   text('Click Me!', width / 2, height / 2);
      * }
