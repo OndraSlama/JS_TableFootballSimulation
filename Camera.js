@@ -4,6 +4,7 @@ class Camera {
 
         this.frameRate = fps;
         this.stepsSinceLastCapture = 0;
+        this.newData = false;
         this.ballPosition = createVector(0, 0);
 
         this.xGrid = [];
@@ -15,6 +16,8 @@ class Camera {
         let stepsToCapture = round((1/this.frameRate)/b2.timeStep); 
         if (this.stepsSinceLastCapture >= stepsToCapture) {
             this.capture();
+            this.game.redPlayer.strategy.newData = true;
+            this.game.bluePlayer.strategy.newData = true;
             this.stepsSinceLastCapture = 0;
         }
         this.stepsSinceLastCapture++;

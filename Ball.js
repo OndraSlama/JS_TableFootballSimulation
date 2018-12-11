@@ -83,13 +83,13 @@ class Ball {
         let scale = 0.005 / b2.timeStep;
         force.normalize();
         force.mult(velMag * -0.002);
-        force.limit(.3);
+        force.limit(.2);
         this.body.ApplyForce(b2.u2w(force, "SCALE"), b2.u2w(this.pos));
 
         // Random stuff
-        force.set(map(noise(this.pos.x / 1000, this.pos.y / 1000), 0, 1, -2, 2),
+        force.set(map(noise(this.pos.x / 1000, this.pos.y / 1000), 0, 1, -1, 1),
             map(noise(this.pos.x / 1000 + 10000, this.pos.y / 1000 + 10000), 0, 1, -0.01, 0.01));
-        force.limit(.6);
+        force.limit(.5);
         if (velMag < 300) force.limit(0.1);
         this.body.ApplyForce(b2.u2w(force, "SCALE"), b2.u2w(this.pos));
 

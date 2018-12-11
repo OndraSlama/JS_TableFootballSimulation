@@ -44,6 +44,7 @@ class Axis {
         
         // Controls
         this.shouldKick = false;
+        this.desiredIntercept = 0;
         this.moveTo = 0;
         this.rotateTo = 0;
 
@@ -56,8 +57,8 @@ class Axis {
 
     update() {
         // Calculate movement parameters 
-        this.behaviours();        
         angleMode(DEGREES);
+        this.behaviours();        
 
         // Rotary movement-------------------------------------------------------------------
         if(abs(this.angularAcc) > this.maxAngularAcc) this.angularAcc = Math.sign(this.angularAcc) * this.maxAngularAcc; 
@@ -71,7 +72,7 @@ class Axis {
             this.absoluteAngle = 3600 - this.absoluteAngle // DODELAT!!
         }
         
-        // Turn off collision-------------------------------------------------------------------------
+            // Turn off collision-------------------------------------------------------------------------
         if (this.absoluteAngle > 400 && this.absoluteAngle < 3200) {
             this.canInteract = false;
         } else {
@@ -105,50 +106,61 @@ class Axis {
         }
     }
 
-    behaviours(){
-        if(!this.shouldKick) this.desiredAngle = this.rotateTo;
-        this.desiredRelativeY = this.moveTo;
-        if(this.shouldKick) this.kick();
-        this.moveToDesiredPosition();
-        this.rorateToDesiredAngle();
-    }
-
+    
     draw() {
         let point1 = b2.u2p(this.absoluteX, this.game.field.height / 2);
         let point2 = b2.u2p(this.absoluteX, -this.game.field.height / 2);
-
+        
         strokeWeight(1);
         stroke(this.color);
         line(point1.x, point1.y, point2.x, point2.y);
         for (let d of this.dummies) {
             d.draw();
         }
-
+        
         // Debug
         if (abs(this.relativeY) > abs(this.maxPos)) this.maxPos = this.relativeY;
         textSize(32);
         // text(redAxes[0].maxPos, 30, 50);
     }
+    
+    behaviours(){
+        this.calculateMoveTo();
 
+        if(!this.shouldKick) this.desiredAngle = this.rotateTo;
+        this.desiredRelativeY = this.moveTo;
+        if(this.shouldKick) this.kick();
+        this.calculateLinearAcc();
+        this.calculateRotaryAcc();
+    }
 
-    moveToDesiredPosition(){
+    calculateMoveTo(){
+        let minDist;
+        minDist = abs(this.desiredIntercept - this.dummies[0].position.y);
+        this.moveTo = this.desiredIntercept - this.dummies[0].offset;
+
+        this.dummies.forEach(dummy => {
+            if (abs(this.desiredIntercept - dummy.position.y) < minDist) {
+                minDist = abs(this.desiredIntercept - dummy.position.y);
+                this.moveTo = this.desiredIntercept - dummy.offset;
+            }
+        });
+    }
+
+    calculateLinearAcc(){
         // Saturate
         if(this.desiredRelativeY > this.highLimit) this.desiredRelativeY = this.highLimit;
         if(this.desiredRelativeY < this.lowLimit) this.desiredRelativeY = this.lowLimit;
         
         // Determine velocity
         let yDist = this.desiredRelativeY - this.relativeY;
-        let yVel = 20*yDist;
+        let yVel = 12*yDist;
 
         // Determine Acceleration
-        if(this.color == "blue"){
-            this.linearAcc = (yVel - this.linearVelocity) / b2.timeStep;        
-        }else{
-            this.linearAcc = (yVel - this.linearVelocity) / b2.timeStep;        
-        }
+        this.linearAcc = (yVel - this.linearVelocity) / b2.timeStep;        
     }
 
-    rorateToDesiredAngle(){
+    calculateRotaryAcc(){
         // Determine velocity
         let angleDist = this.desiredAngle - this.relativeAngle;
         let angleVel = 20*angleDist;

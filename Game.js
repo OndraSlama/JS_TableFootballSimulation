@@ -22,9 +22,9 @@ class Game {
         this.world.ClearForces();
 
         this.ball.update();
+        this.camera.update();
         this.redPlayer.update();
         this.bluePlayer.update();
-        this.camera.update();
     }
 
     draw(){
