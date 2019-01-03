@@ -24,6 +24,8 @@ let ball;
 let field;
 let fieldWidthPxl = canvasWidth * 0.95;
 let fieldHeightPxl = canvasHeight * 0.95;
+let gameSpeedSlider;
+let canvas;
 
 function setup() {
     // determine field dimensions
@@ -32,6 +34,15 @@ function setup() {
     } else {
         fieldWidthPxl = fieldHeightPxl * (1210 / 703);
     }
+    // Create canvas
+    canvas = createCanvas(canvasWidth, canvasHeight);
+    canvas.parent('sketch-holder');
+    canvas.mousePressed(canvasMousePressed);
+    canvas.mouseReleased(canvasMouseReleased);
+    frameRate(animationFrameRate);
+
+    // Create other elements
+    gameSpeedSlider = createSlider(0.1, 2, 1, .1);
 
     // Box 2D settings
     b2.speedFactor = speedFactor; // speed of animation (<0)
@@ -42,10 +53,6 @@ function setup() {
     b2.xOff = b2.p2w(canvasWidth / 2 - fieldWidthPxl / 2); // offset for user's units in x direction ([0] in units == [0 + offset] in world)
     b2.yOff = b2.p2w(canvasHeight / 2); // offset for user's units in y direction
 
-    // Create canvas
-    canvas = createCanvas(canvasWidth, canvasHeight);
-    canvas.parent('sketch-holder');
-    frameRate(animationFrameRate);
 
     // // Create objects
     // field = new Field();
@@ -55,6 +62,12 @@ function setup() {
 }
 
 function draw() {
+    if (gameSpeedSlider.value() > 1){
+        b2.speedFactor = 1 + (gameSpeedSlider.value() - 1)*10;
+    }else{
+        b2.speedFactor = gameSpeedSlider.value();
+    }
+    
     background(50);
     b2.update(function(){
         game.update();
@@ -65,11 +78,11 @@ function draw() {
     actualFrameRate = frameRate();
 }
 
-function mousePressed(){
+function canvasMousePressed(){
     game.ball.bindToTarget();
 }
 
-function mouseReleased(){
+function canvasMouseReleased(){
     game.ball.unbind();
 }
 

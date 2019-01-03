@@ -35,7 +35,7 @@ class Ball {
         this.body.CreateFixture(b2.fixDef);
         this.body.SetUserData(this);
 
-        this.body.ApplyImpulse(new b2.Vec2(random(-0.0005,0.0005), random(-0.001, -0.01)), this.body.GetWorldCenter());
+        this.body.ApplyImpulse(b2.vel2acc(new b2.Vec2(random(-0.000005,0.000005), random(-0.00001, -0.0001)), this.body), this.body.GetWorldCenter());
 
         // Mouse joint definition
         this.target = createVector();
@@ -149,13 +149,13 @@ class Ball {
 
     bindToTarget() {
         if (!this.mouseJoint) {
-            this.mouseJoint = b2.world.CreateJoint(b2.mouseJointDef);
+            this.mouseJoint = this.game.world.CreateJoint(b2.mouseJointDef);
         }
     }
 
     unbind() {
         if (this.mouseJoint) {
-            b2.world.DestroyJoint(this.mouseJoint);
+            this.game.world.DestroyJoint(this.mouseJoint);
             this.mouseJoint = false;
         }
     }

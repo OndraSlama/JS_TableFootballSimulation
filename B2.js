@@ -45,16 +45,10 @@ class B2 {
         this.timeStep = (1 / this.frameRate) * (this.speedFactor < 1 ? this.speedFactor : 1);
 
         for (let a = 0; a < round(this.frameRate / animationFrameRate); a++) {
-            for (let i = 0; i < (this.speedFactor > 1 ? round(this.speedFactor) : 1); i++) {
-                
+            for (let i = 0; i < (this.speedFactor > 1 ? round(this.speedFactor) : 1); i++) {                
                 callback();
             }
         }
-
-        
-
-        
-
     }
 
     // Transformation functions

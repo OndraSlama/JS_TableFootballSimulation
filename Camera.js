@@ -2,6 +2,7 @@ class Camera {
     constructor(game, fps){
         this.game = game;
 
+        // this.delay = 0.1; // in seconds
         this.frameRate = fps;
         this.stepsSinceLastCapture = 0;
         this.newData = false;

@@ -111,12 +111,24 @@ class Axis {
         let point1 = b2.u2p(this.absoluteX, this.game.field.height / 2);
         let point2 = b2.u2p(this.absoluteX, -this.game.field.height / 2);
         
+        // Dummies
         strokeWeight(1);
         stroke(this.color);
         line(point1.x, point1.y, point2.x, point2.y);
         for (let d of this.dummies) {
             d.draw();
         }
+        
+        // Desired pos
+        let desiredY
+        if (this.color == "blue"){
+            desiredY = b2.u2p(-this.desiredIntercept, "HEIGHT");
+        }else{
+            desiredY = b2.u2p(this.desiredIntercept, "HEIGHT");
+        }        
+        stroke("black");
+        fill("black");
+        ellipse(b2.u2p(this.absoluteX, "WIDTH"), desiredY, 4)
         
         // Debug
         if (abs(this.relativeY) > abs(this.maxPos)) this.maxPos = this.relativeY;
@@ -136,13 +148,15 @@ class Axis {
 
     calculateMoveTo(){
         let minDist;
-        minDist = abs(this.desiredIntercept - this.dummies[0].position.y);
-        this.moveTo = this.desiredIntercept - this.dummies[0].offset;
+        minDist = Infinity;
+        this.moveTo = this.desiredIntercept;
 
         this.dummies.forEach(dummy => {
-            if (abs(this.desiredIntercept - dummy.position.y) < minDist) {
-                minDist = abs(this.desiredIntercept - dummy.position.y);
-                this.moveTo = this.desiredIntercept - dummy.offset;
+            if (abs(this.desiredIntercept - (this.relativeY + dummy.offset)) < minDist) {
+                if(this.desiredIntercept - dummy.offset < this.highLimit && this.desiredIntercept - dummy.offset > this.lowLimit){
+                    minDist = abs(this.desiredIntercept - (this.relativeY + dummy.offset));
+                    this.moveTo = this.desiredIntercept - dummy.offset;
+                }
             }
         });
     }
