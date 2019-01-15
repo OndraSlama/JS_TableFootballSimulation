@@ -6,11 +6,13 @@ class Camera {
         this.frameRate = fps;
         this.stepsSinceLastCapture = 0;
         this.newData = false;
+
         this.ballPosition = createVector(0, 0);
+        this.positionHistory = [];
 
         this.xGrid = [];
         this.yGrid = [];
-        this.createGrid(35);
+        this.createGrid(40);
     }
 
     update(){
@@ -20,6 +22,10 @@ class Camera {
             this.game.redPlayer.strategy.newData = true;
             this.game.bluePlayer.strategy.newData = true;
             this.stepsSinceLastCapture = 0;
+            this.positionHistory.push(this.ballPosition);
+            if(this.positionHistory.length > 10){
+                this.positionHistory.splice(0,1);
+            }
         }
         this.stepsSinceLastCapture++;
     }
@@ -42,8 +48,8 @@ class Camera {
 
     capture(){
         this.ballPosition = this.game.ball.pos.copy();
-        // this.ballPosition.x += random(-10,10);
-        // this.ballPosition.y += random(-10,10);
+        this.ballPosition.x += randomGaussian(0, 10);
+        this.ballPosition.y += randomGaussian(0, 10);
 
         let tempPos = 0;
         this.xGrid.forEach(element => {
@@ -66,9 +72,18 @@ class Camera {
     draw(){
         let pos = b2.u2p(this.ballPosition)
         rectMode(CENTER);
-        fill(0,0,250,100);
-        noStroke();
+        noFill();
+        stroke(250,0,0);
         ellipse(pos.x, pos.y, b2.u2p(this.game.ball.diameter));
+
+        noFill();
+        stroke("red");
+        for(let i = 0; i < this.positionHistory.length; i++){     
+            pos = b2.u2p( this.positionHistory[i]);
+            let nextPos = b2.u2p(this.positionHistory[min(i + 1, this.positionHistory.length - 1)]);
+            ellipse(pos.x, pos.y, 4);
+            line(pos.x, pos.y, nextPos.x, nextPos.y);                        
+        }
     }
 
 
