@@ -11,18 +11,35 @@ class Strategy {
     
     cameraInput(x,y){
         if (!this.newData) return;
-
         this.ball.position.x = x;
         this.ball.position.y = y;
-
         this.newData = false;
     }
+
 
     process(){
         this.player.axes.forEach(axis => {
             axis.desiredIntercept = this.ball.position.y;
+            this.kick(axis);
+            if(this.ball.position.x < axis.relativeX){
+                axis.rotateTo = -900;
+            }else{
+                axis.rotateTo = 0;
+            }
         });
     }
+
+    kick(axis){
+        if (this.ball.position.x < axis.relativeX) return;
+        if (this.ball.position.x > axis.relativeX + 500) return;
+        axis.dummies.forEach(dummy =>{
+            if(abs(dummy.position.y - this.ball.position.y) < 175){
+                axis.shouldKick = 1;
+            };
+        })
+    }
+
+ 
 }
 
 class strategyBall {

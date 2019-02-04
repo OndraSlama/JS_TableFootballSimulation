@@ -71,10 +71,8 @@ function draw() {
     background(50);
     b2.update(function(){
         game.update();
-    }, animationFrameRate)
-    
+    }, animationFrameRate)    
     game.draw();
-
     actualFrameRate = frameRate();
 }
 
@@ -85,54 +83,3 @@ function canvasMousePressed(){
 function canvasMouseReleased(){
     game.ball.unbind();
 }
-
-// function createAxes(){
-//     // Red team
-//     a = new Axis(800, "red", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 0));
-//     redAxes.push(a);
-    
-//     a = new Axis(2300, "red", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 1190));
-//     a.dummies.push(new Dummy(a, -1190));
-//     redAxes.push(a);
-
-//     a = new Axis(5300, "red", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 2380));
-//     a.dummies.push(new Dummy(a, 1190));
-//     a.dummies.push(new Dummy(a, 0));
-//     a.dummies.push(new Dummy(a, -1190));
-//     a.dummies.push(new Dummy(a, -2380));
-//     redAxes.push(a);
-
-//     a = new Axis(8300, "red", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 2080));
-//     a.dummies.push(new Dummy(a, 0));
-//     a.dummies.push(new Dummy(a, -2080));
-//     redAxes.push(a);
-
-//     // Blue team
-//     a = new Axis(800, "blue", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 0));
-//     blueAxes.push(a);
-    
-//     a = new Axis(2300, "blue", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 1190));
-//     a.dummies.push(new Dummy(a, -1190));
-//     blueAxes.push(a);
-
-//     a = new Axis(5300, "blue", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 2380));
-//     a.dummies.push(new Dummy(a, 1190));
-//     a.dummies.push(new Dummy(a, 0));
-//     a.dummies.push(new Dummy(a, -1190));
-//     a.dummies.push(new Dummy(a, -2380));
-//     blueAxes.push(a);
-
-//     a = new Axis(8300, "blue", 1000, -1000);
-//     a.dummies.push(new Dummy(a, 2080));
-//     a.dummies.push(new Dummy(a, 0));
-//     a.dummies.push(new Dummy(a, -2080));
-//     blueAxes.push(a);
-// }
-
