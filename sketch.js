@@ -1,9 +1,17 @@
 // My box2D object
 let b2 = new B2;
 
+// Fotbal constants
+const FIELD_WIDTH = 12100; // width of the field
+const FIELD_HEIGHT = 7030; // height of the field
+const GOAL_WIDTH = 2150; // width of the goal
+const SLOPE_SIZE = 400; // width of the slope around borders
+const CORNER_SLOPE_REACH = 1200;
+const BALL_RADIUS = 175;
+
 // My settings
-let canvasWidth = 700;
-let canvasHeight = 400;
+let canvasWidth = 1000;
+let canvasHeight = 600;
 let animationFrameRate = 60;
 let cameraFrameRate = 90; // <1-200>
 let speedFactor = 1; // don't change this below 1 (problems with drag forces)
@@ -56,7 +64,7 @@ function setup() {
 
     // // Create objects
     // field = new Field();
-    // ball = new Ball(12100/2, -3300)
+    // ball = new Ball(FIELD_WIDTH/2, -3300)
     // createAxes();  
     game = new Game();  
 }
@@ -64,6 +72,8 @@ function setup() {
 function draw() {
     if (gameSpeedSlider.value() > 1){
         b2.speedFactor = 1 + (gameSpeedSlider.value() - 1)*10;
+    }else if(gameSpeedSlider.value() == .1){
+        b2.speedFactor = 0.01;
     }else{
         b2.speedFactor = gameSpeedSlider.value();
     }

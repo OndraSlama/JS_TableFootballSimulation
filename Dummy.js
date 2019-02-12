@@ -15,7 +15,7 @@ class Dummy {
         // Fixture definition
         b2.fixDef.density = 1.0;
         b2.fixDef.friction = .1;
-        b2.fixDef.restitution = 0.3;
+        b2.fixDef.restitution = .3;
 
         // Body definition
         b2.bodyDef.type = b2.Body.b2_kinematicBody;

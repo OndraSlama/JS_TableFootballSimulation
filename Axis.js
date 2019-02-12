@@ -11,7 +11,7 @@ class Axis {
         this.relativeX = xPosition;
         this.color = color;
         if (color == "blue"){
-            this.absoluteX = 12100 - xPosition;
+            this.absoluteX = FIELD_WIDTH - xPosition;
         }else{
             this.absoluteX = xPosition;
         }        
@@ -44,7 +44,6 @@ class Axis {
         
         // Controls
         this.shouldKick = false;
-        this.desiredIntercept = 0;
         this.moveTo = 0;
         this.rotateTo = 0;
 
@@ -119,17 +118,6 @@ class Axis {
             d.draw();
         }
         
-        // Desired pos
-        let desiredY
-        if (this.color == "blue"){
-            desiredY = b2.u2p(-this.desiredIntercept, "HEIGHT");
-        }else{
-            desiredY = b2.u2p(this.desiredIntercept, "HEIGHT");
-        }        
-        stroke("black");
-        fill("black");
-        ellipse(b2.u2p(this.absoluteX, "WIDTH"), desiredY, 4)
-        
         // Debug
         if (abs(this.relativeY) > abs(this.maxPos)) this.maxPos = this.relativeY;
         textSize(32);
@@ -137,28 +125,11 @@ class Axis {
     }
     
     behaviours(){
-        this.calculateMoveTo();
-
         if(!this.shouldKick) this.desiredAngle = this.rotateTo;
         this.desiredRelativeY = this.moveTo;
         if(this.shouldKick) this.kick();
         this.calculateLinearAcc();
         this.calculateRotaryAcc();
-    }
-
-    calculateMoveTo(){
-        let minDist;
-        minDist = Infinity;
-        this.moveTo = this.desiredIntercept;
-
-        this.dummies.forEach(dummy => {
-            if (abs(this.desiredIntercept - (this.relativeY + dummy.offset)) < minDist) {
-                if(this.desiredIntercept - dummy.offset < this.highLimit && this.desiredIntercept - dummy.offset > this.lowLimit){
-                    minDist = abs(this.desiredIntercept - (this.relativeY + dummy.offset));
-                    this.moveTo = this.desiredIntercept - dummy.offset;
-                }
-            }
-        });
     }
 
     calculateLinearAcc(){
@@ -190,15 +161,15 @@ class Axis {
                 this.rotaryState = BACKSWING;
                 break;
             case BACKSWING:
-                this.desiredAngle = -1400;
-                if(this.relativeAngle < -1200){
+                this.desiredAngle = -1000;
+                if(this.relativeAngle < -900){
                     this.rotaryState = KICK;
                 }
                 break;
 
             case KICK:
-                this.desiredAngle = 1300;
-                if(this.relativeAngle > 1100){
+                this.desiredAngle = 1000;
+                if(this.relativeAngle > 900){
                     this.rotaryState = KICK;
                     this.desiredAngle = 0;
 

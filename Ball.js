@@ -1,7 +1,7 @@
 class Ball {
-    constructor(game, x = 12100/2, y = -3300) {
+    constructor(game, x = FIELD_WIDTH/2, y = -3300) {
         this.game = game;        
-        this.diameter = 350;
+        this.diameter = BALL_RADIUS*2;
 
         // State
         this.pos;
@@ -16,7 +16,7 @@ class Ball {
         // Body definition
         b2.bodyDef.type = b2.Body.b2_dynamicBody;
         b2.bodyDef.position = b2.u2w(createVector(x, y));
-        b2.bodyDef.linearDamping = 0.1;
+        b2.bodyDef.linearDamping = 0.15;
         // b2.bodyDef.linearVelocity.x = b2.u2w(100);
         // b2.bodyDef.linearVelocity.y = b2.u2w(-10000);
 
@@ -24,7 +24,7 @@ class Ball {
         // Fixture definition
         b2.fixDef.density = 1.0;
         b2.fixDef.friction = .05;
-        b2.fixDef.restitution = 0.3;
+        b2.fixDef.restitution = 0.2;
         b2.fixDef.filter.maskBits = 65535;
         b2.fixDef.filter.categoryBits = 1;
 
@@ -89,7 +89,6 @@ class Ball {
         // Random stuff
         force.set(map(noise(this.pos.x / 1000, this.pos.y / 1000), 0, 1, -1, 1),
             map(noise(this.pos.x / 1000 + 10000, this.pos.y / 1000 + 10000), 0, 1, -0.01, 0.01));
-        force.limit(.5);
         if (velMag < 300) force.limit(0.1);
         this.body.ApplyForce(b2.u2w(force, "SCALE"), b2.u2w(this.pos));
 
@@ -107,7 +106,7 @@ class Ball {
 
         // Edge slopes
         if (abs(this.pos.y) > (this.game.field.height / 2 - this.game.field.slopesize)) {
-            force.set(0, -Math.sign(this.pos.y) * 10);
+            force.set(0, -Math.sign(this.pos.y) * 40);
             this.body.ApplyForce(b2.u2w(force, "SCALE"), b2.u2w(this.pos));
         }
 

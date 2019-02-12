@@ -11,6 +11,8 @@ class Game {
         this.ball = new Ball(this);
         this.field = new Field(this);
         this.camera = new Camera(this, fps);
+        this.redPlayer.setStrategy();
+        this.bluePlayer.setStrategy();
     }
     
     update(){
@@ -33,5 +35,9 @@ class Game {
         this.redPlayer.draw();
         this.bluePlayer.draw();
         this.camera.draw();
+
+        // Debug
+        textSize(32);
+        text(round(this.redPlayer.strategy.ball.velocity.mag()), 100, 60);
     }
 }

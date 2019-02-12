@@ -9,8 +9,11 @@ class Player{
         
         // State
         this.goals = 0;
-        
-        // Strategy
+
+        this.strategy;
+    }
+
+    setStrategy(){
         if(this.color == "red"){
             this.strategy = new Strategy(this, this.game.bluePlayer);
         }else{
@@ -50,15 +53,27 @@ class Player{
         if (this.color == "red") {
             this.strategy.cameraInput(this.game.camera.ballPosition.x, this.game.camera.ballPosition.y)
         } else {
-            this.strategy.cameraInput(12100 - this.game.camera.ballPosition.x, -this.game.camera.ballPosition.y)
+            this.strategy.cameraInput(FIELD_WIDTH - this.game.camera.ballPosition.x, -this.game.camera.ballPosition.y)
         }
 
+        for (let i = 0; i < this.strategy.playerAxes.length; i++) {
+            this.strategy.playerAxes[i].y = this.axes[i].relativeY;
+        }
         this.strategy.process();
+        for (let i = 0; i < this.strategy.playerAxes.length; i++) {
+            this.axes[i].moveTo = this.strategy.playerAxes[i].desiredPosition;
+            this.axes[i].rotateTo = this.strategy.playerAxes[i].desiredAngle;
+            if(this.strategy.playerAxes[i].shouldKick) this.axes[i].shouldKick = 1;
+        }
     }
 
     draw(){
         for (let a of this.axes) {
             a.draw();
         }
+        
+        
+        this.strategy.draw();
+        
     }
 }

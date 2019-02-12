@@ -1,10 +1,10 @@
 class Field {
-    constructor(game, rest = .5) {
+    constructor(game, rest = .2) {
         this.game = game;
-        this.width = 12100; // width of the field
-        this.height = 7030; // height of the field
-        this.goalWidth = 2150; // width of the goal
-        this.slopesize = 400; // width of the slope around borders
+        this.width = FIELD_WIDTH; // width of the field
+        this.height = FIELD_HEIGHT; // height of the field
+        this.goalWidth = GOAL_WIDTH; // width of the goal
+        this.slopesize = SLOPE_SIZE; // width of the slope around borders
         this.cornerSlopeReach = 1200;
 
         this.body;
@@ -59,11 +59,11 @@ class Field {
         
         // top
         let corner = b2.u2p(0, this.height/2);
-        rect(corner.x, corner.y, b2.u2p(this.width, "SCALE"), b2.u2p(400))
+        rect(corner.x, corner.y, b2.u2p(this.width, "SCALE"), b2.u2p(SLOPE_SIZE))
         
         // bottom
         corner = b2.u2p(0, -this.height/2 + this.slopesize);
-        rect(corner.x, corner.y, b2.u2p(this.width, "SCALE"), b2.u2p(400));
+        rect(corner.x, corner.y, b2.u2p(this.width, "SCALE"), b2.u2p(SLOPE_SIZE));
         
         // Top left triangle
         let points = [];
