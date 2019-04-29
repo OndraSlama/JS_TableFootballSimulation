@@ -44,6 +44,7 @@ class Axis {
         
         // Controls
         this.shouldKick = false;
+        this.kickPower = 80;
         this.moveTo = 0;
         this.rotateTo = 0;
 
@@ -156,20 +157,21 @@ class Axis {
     }
 
     kick(){
+        if (this.kickPower < 10) this.kickPower = 10;
         switch (this.rotaryState) {
             case WAIT:
                 this.rotaryState = BACKSWING;
                 break;
             case BACKSWING:
-                this.desiredAngle = -1000;
-                if(this.relativeAngle < -900){
+                this.desiredAngle = -1300 * this.kickPower/100;
+                if(this.relativeAngle < -1200 * this.kickPower/100){
                     this.rotaryState = KICK;
                 }
                 break;
 
             case KICK:
-                this.desiredAngle = 1000;
-                if(this.relativeAngle > 900){
+                this.desiredAngle = 1300 * this.kickPower/100;
+                if(this.relativeAngle > 1200 * this.kickPower/100){
                     this.rotaryState = KICK;
                     this.desiredAngle = 0;
 

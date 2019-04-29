@@ -8,16 +8,20 @@ const GOAL_WIDTH = 2150; // width of the goal
 const SLOPE_SIZE = 400; // width of the slope around borders
 const CORNER_SLOPE_REACH = 1200;
 const BALL_RADIUS = 175;
+const DUMMY_X = 100;
+const DUMMY_Y = 200;
+const DUMMY_HEIGHT = 500;
 
 // My settings
-let canvasWidth = 1000;
-let canvasHeight = 600;
+let canvasWidth;
+let canvasHeight;
 let animationFrameRate = 60;
 let cameraFrameRate = 90; // <1-200>
 let speedFactor = 1; // don't change this below 1 (problems with drag forces)
 
 // Colors
-const FIELD_BOUNDARIES = "red";
+const FIELD_BOUNDARIES = 80;
+const FIELD_BACKGROUND = 50;
 const SLOPES = 40;
 const BALL = "yellow";
 const DUMMY_NOT_BLOCKING = 30;
@@ -30,13 +34,21 @@ let redAxes = [];
 let blueAxes = [];
 let ball;
 let field;
-let fieldWidthPxl = canvasWidth * 0.95;
-let fieldHeightPxl = canvasHeight * 0.95;
+let fieldWidthPxl;
+let fieldHeightPxl;
 let gameSpeedSlider;
 let canvas;
 
 function setup() {
+    // determine canvas dimensions
+    // canvasWidth = windowWidth*0.9;
+    // canvasHeight = min(windowHeight*0.8, canvasWidth * 0.53);
+    canvasWidth = 1210;
+    canvasHeight = 703;
+
     // determine field dimensions
+    fieldWidthPxl = canvasWidth * 0.95;
+    fieldHeightPxl = canvasHeight * 0.95;
     if (fieldWidthPxl * fieldWidthPxl * (703 / 1210) < (fieldHeightPxl * fieldHeightPxl * (1210 / 703))) {
         fieldHeightPxl = fieldWidthPxl * (703 / 1210);
     } else {
@@ -54,7 +66,7 @@ function setup() {
 
     // Box 2D settings
     b2.speedFactor = speedFactor; // speed of animation (<0)
-    b2.frameRate = 1000; // desired framerate
+    b2.frameRate = 150; // desired framerate
     b2.pixelScale = fieldWidthPxl / 1.21 // pixel to world scale: (pixel dist)/(world dist)
     b2.unitsScaleX = 10000; // units to world scale: (units dist)/(world dist)
     b2.unitsScaleY = -10000; // units to world scale: (units dist)/(world dist)
@@ -70,7 +82,9 @@ function setup() {
 }
 
 function draw() {
-    if (gameSpeedSlider.value() > 1){
+    if(gameSpeedSlider.value() == 2){
+        b2.speedFactor = 1 + (gameSpeedSlider.value() - 1)*1000;
+    }else if (gameSpeedSlider.value() > 1){
         b2.speedFactor = 1 + (gameSpeedSlider.value() - 1)*10;
     }else if(gameSpeedSlider.value() == .1){
         b2.speedFactor = 0.01;
@@ -78,7 +92,7 @@ function draw() {
         b2.speedFactor = gameSpeedSlider.value();
     }
     
-    background(50);
+    background(0);
     b2.update(function(){
         game.update();
     }, animationFrameRate)    

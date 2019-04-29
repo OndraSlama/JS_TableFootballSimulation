@@ -52,6 +52,13 @@ class Field {
     }
 
     draw() {
+        // Draw background
+        rectMode(CORNERS)
+        fill(FIELD_BACKGROUND);
+        noStroke(); 
+        rect(b2.w2p(this.vertices[1].x), b2.w2p(this.vertices[1].y), b2.w2p(this.vertices[7].x), b2.w2p(this.vertices[7].y))
+
+
         // Draw slopes ---------------------------
         rectMode(CORNER)
         fill(SLOPES);

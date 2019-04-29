@@ -2,6 +2,8 @@ class Camera {
     constructor(game, fps){
         this.game = game;
 
+        this.filter = new Filter(150, 2, 1.3);
+
         // this.delay = 0.1; // in seconds
         this.frameRate = fps;
         this.stepsSinceLastCapture = 0;
@@ -50,6 +52,21 @@ class Camera {
         this.ballPosition = this.game.ball.pos.copy();
         this.ballPosition.x += randomGaussian(0, 5);
         this.ballPosition.y += randomGaussian(0, 5);
+        for (let ax of this.game.redPlayer.axes) {
+            let dist = this.ballPosition.x - ax.absoluteX
+            if(abs(dist) < BALL_RADIUS*1.5){                
+                this.ballPosition.x = ax.absoluteX + Math.sign(dist) * BALL_RADIUS + 0.5*(dist)
+                break;
+            }            
+        }
+        
+        for (let ax of this.game.bluePlayer.axes) {
+            let dist = this.ballPosition.x - ax.absoluteX
+            if(abs(dist) < BALL_RADIUS*1.5){                
+                this.ballPosition.x = ax.absoluteX + Math.sign(dist) * BALL_RADIUS + 0.5*(dist)
+                break;
+            }            
+        }
 
         let tempPos = 0;
         this.xGrid.forEach(element => {
@@ -62,11 +79,11 @@ class Camera {
         tempPos = 0;
         this.yGrid.forEach(element => {
             if (abs(this.ballPosition.y - element) < abs(this.ballPosition.y - tempPos)){
-                tempPos = element
-            }            
+                tempPos = element;
+            }
         });
         this.ballPosition.y = tempPos;
-
+        this.ballPosition = this.filter.filterData(this.ballPosition);
     }
 
     draw(){

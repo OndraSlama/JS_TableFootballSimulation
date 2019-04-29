@@ -17,6 +17,11 @@ h1 {
   color: grey;
 }
 
+.title{
+  font-size: 3rem;
+  color: grey;
+}
+
 p {
   font-size: 1rem;
   color: grey;

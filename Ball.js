@@ -22,9 +22,9 @@ class Ball {
 
 
         // Fixture definition
-        b2.fixDef.density = 1.0;
+        b2.fixDef.density = 1.1;
         b2.fixDef.friction = .05;
-        b2.fixDef.restitution = 0.2;
+        b2.fixDef.restitution = 0;
         b2.fixDef.filter.maskBits = 65535;
         b2.fixDef.filter.categoryBits = 1;
 
@@ -35,7 +35,7 @@ class Ball {
         this.body.CreateFixture(b2.fixDef);
         this.body.SetUserData(this);
 
-        this.body.ApplyImpulse(b2.vel2acc(new b2.Vec2(random(-0.000005,0.000005), random(-0.00001, -0.0001)), this.body), this.body.GetWorldCenter());
+        this.body.ApplyImpulse(b2.vel2acc(new b2.Vec2(random(b2.u2w(-0.005, "SCALE"), b2.u2w(0.005, "SCALE")), random(b2.u2w(.5, "SCALE"), b2.u2w(1.5, "SCALE"))), this.body), this.body.GetWorldCenter());
 
         // Mouse joint definition
         this.target = createVector();
@@ -78,27 +78,31 @@ class Ball {
 
     applyForces() {
         // Friction
+        let magnitude = 0.001;
+        let max = 0.2
         let force = this.velocity.copy();
         let velMag = p5.Vector.mag(this.velocity);
         let scale = 0.005 / b2.timeStep;
         force.normalize();
-        force.mult(velMag * -0.002);
-        force.limit(.2);
+        force.mult(velMag * -magnitude);
+        force.limit(max);
         this.body.ApplyForce(b2.u2w(force, "SCALE"), b2.u2w(this.pos));
 
         // Random stuff
-        force.set(map(noise(this.pos.x / 1000, this.pos.y / 1000), 0, 1, -1, 1),
-            map(noise(this.pos.x / 1000 + 10000, this.pos.y / 1000 + 10000), 0, 1, -0.01, 0.01));
+        let softness = 3000
+        magnitude = 1
+        force.set(  map(noise(this.pos.x / softness, this.pos.y / softness), 0, 1, -magnitude, magnitude),
+                    map(noise(this.pos.x / softness + 1000, this.pos.y / softness + 1000), 0, 1, -magnitude, magnitude));
         if (velMag < 300) force.limit(0.1);
         this.body.ApplyForce(b2.u2w(force, "SCALE"), b2.u2w(this.pos));
 
         // Blow
-        if (velMag < 60) {
+        if (velMag < 120) {
             this.timer += b2.timeStep;
         } else {
             this.timer = 0;
         }
-        if (this.timer > 2) {
+        if (this.timer > 3) {
             this.timer = 0;
             force.set(-Math.sign(this.pos.x - this.game.field.width / 2) * random(200, 400) * scale, Math.sign(random(-1, 1)) * random(200, 400) * scale);
             this.body.ApplyForce(b2.u2w(force, "SCALE"), b2.u2w(this.pos));
